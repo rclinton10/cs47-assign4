@@ -1,7 +1,7 @@
 import { render, waitFor } from '@testing-library/react-native';
 import App from '../App';
 import { Themes, Images } from '../assets/Themes';
-import { SpotifyAuthButton } from '../components';
+import SpotifyAuthButton from '../components/SpotifyAuthButton';
 import { toBeOf, someOfToBeOf, findAllByType } from './utils';
 
 jest.useFakeTimers();

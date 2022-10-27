@@ -1,6 +1,7 @@
 import { render } from '@testing-library/react-native';
 import { Themes } from '../assets/Themes';
-import { Song, SongList } from '../components';
+import Song from '../components/Song';
+import SongList from '../components/SongList';
 import { findByTestID, findAllByType } from './utils';
 
 describe('SongList tests', () => {
