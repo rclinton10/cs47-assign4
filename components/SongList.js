@@ -1,10 +1,15 @@
-import { View, Text, StyleSheet, Image, PixelRatio, Dimensions, FlatList } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Image, PixelRatio, Dimensions, FlatList } from 'react-native';
 import Song from "./Song";
+import { Themes } from "../assets/Themes";
+import { useSpotifyAuth } from "../utils";
+import SpotifyAuthButton from "../components/SpotifyAuthButton";
 
-const SongList = ({ tracks }) => { 
-    const renderSong = ({ item, index }) => (
+function Songs({ tracks, navigation }) { 
+    const renderSong = ({ item }) => (
         <Song
-            index={index + 1}
+            navigation={navigation}
+            external_url={item.external_urls.spotify}
+            preview_url={item.preview_url}
             image={item.album.images[2]}
             title={item.name}
             artist={item.artists}
@@ -15,23 +20,44 @@ const SongList = ({ tracks }) => {
     );
 
     return (
-        <View style={{ flex: 1}}>
+        <View style={styles.container}>
             <View style={styles.tracksHeader}>
             <Image style={styles.headerImage} source={require('../assets/spotify-logo.png')}/>
             <Text style={styles.headerText}>My Top Tracks</Text>
             </View>
             <FlatList
                 data={tracks} // the array of data that the FlatList displays
-                renderItem={(item, index) => renderSong(item, index)} // function that renders each item
+                renderItem={(item) => renderSong(item)} // function that renders each item
                 keyExtractor={(item) => item.id} // unique key for each item
             />
         </View>
     )
 };
 
+function SongList({navigation}) {
+    const { token, tracks, getSpotifyAuth } = useSpotifyAuth();
+  
+    function CurrentScreen(props) {
+        if (props.token) return <Songs tracks={tracks} navigation={navigation}/> 
+        return <SpotifyAuthButton getSpotifyAuth={getSpotifyAuth}/>;
+    }
+
+    return (
+        <SafeAreaView style={styles.container}>
+            <CurrentScreen token={token}/>
+        </SafeAreaView>
+    );
+}
+
 export default SongList;
 
 const styles = StyleSheet.create({
+    container: {
+        backgroundColor: Themes.colors.background,
+        justifyContent: "center",
+        alignItems: "center",
+        flex: 1,
+    },
     tracksHeader: {
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').height * 0.1,

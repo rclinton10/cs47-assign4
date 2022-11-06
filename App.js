@@ -1,33 +1,29 @@
-import { StyleSheet, SafeAreaView, Text, Button, FlatList, View, TouchableOpacity, Image, Dimensions, PixelRatio, InteractionManager } from "react-native";
-import { useSpotifyAuth } from "./utils";
-import { Themes } from "./assets/Themes";
-import Song from "./components/Song";
-import { useFonts } from 'expo-font';
-import SpotifyAuthButton from "./components/SpotifyAuthButton";
+import { StyleSheet } from "react-native"
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
 import SongList from "./components/SongList";
-import { useState } from "react";
+import DetailedSongInfo from "./components/DetailedSongInfo";
+import SongPreview from "./components/SongPreview"
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
-  // Pass in true to useSpotifyAuth to use the album ID (in env.js) instead of top tracks
-  const { token, tracks, getSpotifyAuth } = useSpotifyAuth();
-  
-  function CurrentScreen(props) {
-    if (props.token) return <SongList tracks={tracks}/> 
-    return <SpotifyAuthButton getSpotifyAuth={getSpotifyAuth}/>;
-  }
-  
   return (
-    <SafeAreaView style={styles.container}>
-      <CurrentScreen token={token}/>
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="All songs" component={SongList} options={{headerShown: false}}/>
+        <Stack.Screen name="Song details" component={DetailedSongInfo} options={{headerTitleStyle : styles.headerTitleStyle, headerStyle: styles.headerStyle}} />
+        <Stack.Screen name="Song preview" component={SongPreview} options={{headerTitleStyle : styles.headerTitleStyle, headerStyle: styles.headerStyle}} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: Themes.colors.background,
-    justifyContent: "center",
-    alignItems: "center",
-    flex: 1,
+  headerStyle: {
+    backgroundColor: 'black'
   },
-});
+  headerTitleStyle: {
+    color: '#3366CC'
+  }
+})
